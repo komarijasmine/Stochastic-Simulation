@@ -1,6 +1,7 @@
 ---
 title: "report"
 output: html_document
+authors: "Indigo Morgenstern, Komari Machida"
 ---
 
 Before starting our experiment, we check the effectiveness of our random number generator.
@@ -78,7 +79,7 @@ lines(x, 1/(pi*(sqrt(x*(1-x)))), type='l', col='brown', lwd=3)
 print(mean(pos.vec))
 ```
 
-We calculated the probaility of having a positive balance less than 5% of the time, first based on the data recorded in POS.VEC and then using the arcsin law (Task J). As predicted by our graph, the two calculations resulted in answers very close to each other. However, they contradicted our original answer to E.
+We calculated the probability of having a positive balance less than 5% of the time, first based on the data recorded in POS.VEC and then using the arcsin law (Task J). As predicted by our graph, the two calculations resulted in answers very close to each other. However, they contradicted our original answer to E.
 ```{r}
 sim.prob <- sum(pos.vec < 0.05) / 1000
 print('Simulated probability:')
