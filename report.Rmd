@@ -25,54 +25,34 @@ hist(z, main='Histogram of 5000 draws')
 n<-10
 
 sim.coin <- function(n) {
-  U<-runif(n, -1, 1)
-  print(U)
-  for (i in 1:n) {
-    if (U[i]<0) {
-      U[i]<--1
-    }
-    else {
-      U[i]<-1
-    }
-  }
-  return (U)
+  S<-runif(n, -1, 1)
+  ifelse(S < 0, -1, 1)
 }
 
 sim.coin(n)
 ```
-[C 3650 cumsum(sim.coin(n))]
+[C 3650 og_cumsum(sim.coin(n))]
 
 ```{r}
 n<-3650
 
-sum<-1:3650
-positive<-0
-
-cumsum <- function(x) {
-  sum[1]<- x[1]
-  for (i in 2:3650) {
-    sum[i]<- sum[i-1] + x[i-1]
-    if (sum[i]>0) {
-      positive<-positive + 1
-      }
-  }
-  positive<-positive/3650
-  return (list(sum, positive))
+my_cumsum <- function(x) {
+  sum_vec <- cumsum(x)  # base R's cumsum is written in C — extremely fast
+  positive <- sum(sum_vec > 0) / length(sum_vec)
+  return(list(sum_vec, positive))
 }
-print(cumsum(sim.coin(n))[[1]])
 
-balance<-cumsum(sim.coin(n))[[1]]
+balance<-my_cumsum(sim.coin(n))[[1]]
 plot(1:3650,balance,type='l',xlab="Number of Trials", ylab="Balance", ylim=c(-150, 150))
 
-balance<-cumsum(sim.coin(n))[[1]]
+balance<-my_cumsum(sim.coin(n))[[1]]
 lines(1:3650, balance, type='l', col='blue')
 
-balance<-cumsum(sim.coin(n))[[1]]
+balance<-my_cumsum(sim.coin(n))[[1]]
 lines(1:3650, balance, type='l', col='red')
 
-balance<-cumsum(sim.coin(n))[[1]]
+balance<-my_cumsum(sim.coin(n))[[1]]
 lines(1:3650, balance, type='l', col='pink')
-
 
 ```
 
@@ -88,8 +68,24 @@ No, because in
 
 ```{r}
 pos.vec<-1:1000
+
 for (i in 1:1000) {
-  pos.vec[i]<-cumsum(sim.coin(n))[[2]]
+  pos.vec[i]<-my_cumsum(sim.coin(n))[[2]]
 }
-hist(1:1000, pos.vec, probability=TRUE)
+hist(pos.vec, probability=TRUE, 
+     main = "Fraction of time balance is positive",
+     xlab = "Fraction positive")
+x<-seq(0,1,0.01)
+lines(x, 1/(pi*(sqrt(x*(1-x)))), type='l', col='brown', lwd=3)
+
+print(mean(pos.vec))
+```
+[J: calculate probability we have positive balance less than 5% of time]
+
+```{r}
+sim.prob <- sum(pos.vec < 0.05) / 1000
+print(sim.prob)
+
+theoretical.prob <- (2/pi) * asin(sqrt(0.05))
+print(theoretical.prob)
 ```
