@@ -3,24 +3,21 @@ title: "report"
 output: html_document
 ---
 
-[introduction]
+Before starting our experiment, we check the effectiveness of our random number generator.
 
 ```{r}
 par(mfrow=c(1,3))
 x <- runif(50)
-hist(x, main='Histogram of 50 draws')
+hist(x, main='Histogram of 50 draws', xlab='Value of number generated')
 y <- runif(500)
-hist(y, main='Histogram of 500 draws')
+hist(y, main='Histogram of 500 draws', xlab='Value of number generated')
 z <- runif(5000)
-hist(z, main='Histogram of 5000 draws')
+hist(z, main='Histogram of 5000 draws', xlab='Value of number generated')
 ```
+We can see that as the number of draws increases, the histogram of the random number generator approaches a truly uniform distribution. Therefore the random number generator is satisfyingly random (Task A).
 
-[discussion of efficacy of random number generator]
+To start our experiment, we first simulate coin flips using a random variable S that has the value -1 to represent flipping tails and 1 to represent flipping heads. To do this, we used the function sim.coin(). In this function, we first made the vector S with random numbers between -1 and 1 using the random number generator. Then we used ifelse() to iterate over every element of S, and for each, change it to either -1 or 1 depending on whether it was less than or greater than zero (Task B). We tested that this function worked using an example parameter of ten.
 
-
-[introduction to meat of assignment]
-
-[B: simulating random variable S with uniformly distributed variable U]
 ```{r}
 n<-10
 
@@ -31,18 +28,24 @@ sim.coin <- function(n) {
 
 sim.coin(n)
 ```
-[C 3650 og_cumsum(sim.coin(n))]
+To simulate the coin being flipped 3650 times, we fixed the parameter of sim.coin() to 3650 trials (Task C). For convenience, we created a function that would complete two tasks at once: my_cumsum() returns both SUM_VEC, a vector of the balance after each trial, and POSITIVE, the fraction of time that the balance was positive over the course of the year.
+
+Although we expected the balance to be positive approximately half the time, we ran our code a few times and found results that varied widely, from 0.6% to 86% (Task D). This caused us to doubt our intuition. In addition, we guessed that the probability of the balance being positive only five percent of the time would be very low, less than 5% (Task E).
+
+We then graphed four repetitions of this year-long experiment (Task F), which are visible in the following graph. We added a line through y=0 to make it easier to see when the balance is negative and when it is positive.
 
 ```{r}
 n<-3650
 
 my_cumsum <- function(x) {
-  sum_vec <- cumsum(x)  # base R's cumsum is written in C — extremely fast
+  sum_vec <- cumsum(x)
   positive <- sum(sum_vec > 0) / length(sum_vec)
   return(list(sum_vec, positive))
 }
 
 balance<-my_cumsum(sim.coin(n))[[1]]
+print('Fraction of the time the balance was positive:')
+print(my_cumsum(sim.coin(n))[[2]])
 plot(1:3650,balance,type='l',xlab="Number of Trials", ylab="Balance", ylim=c(-150, 150))
 
 balance<-my_cumsum(sim.coin(n))[[1]]
@@ -54,17 +57,11 @@ lines(1:3650, balance, type='l', col='red')
 balance<-my_cumsum(sim.coin(n))[[1]]
 lines(1:3650, balance, type='l', col='pink')
 
+abline(h=0, type='l', col='black', lty=2)
 ```
+To get a better idea of what percentage of the time the balance tends to be positive, we repeated the year-long experiment 1000 times. We used a for-loop to repeat it and record the results of each experiment in a vector called POS.VEC. We then plotted POS.VEC (the fraction of the time the balance was positive in each experiment) on a histogram (Task G).
 
-[we expect that the balance is positive half the time, is this the case in your generated realization?]
-
-No, because in 
-
-[E: a graph where the balance is positive only 5 percent of the time seems highly unlikely. Make a guess at the probability of this happening]
-
-
-
-[F:]
+To demonstrate the arcsin law, we added the curve f(x)=1/pi*sqrt(x(1-x)) to the histogram (Task H). We the calculated the mean of POS.VEC using the mean() function (Task I).
 
 ```{r}
 pos.vec<-1:1000
@@ -80,12 +77,15 @@ lines(x, 1/(pi*(sqrt(x*(1-x)))), type='l', col='brown', lwd=3)
 
 print(mean(pos.vec))
 ```
-[J: calculate probability we have positive balance less than 5% of time]
 
+We calculated the probaility of having a positive balance less than 5% of the time, first based on the data recorded in POS.VEC and then using the arcsin law (Task J). As predicted by our graph, the two calculations resulted in answers very close to each other. However, they contradicted our original answer to E.
 ```{r}
 sim.prob <- sum(pos.vec < 0.05) / 1000
+print('Simulated probability:')
 print(sim.prob)
 
 theoretical.prob <- (2/pi) * asin(sqrt(0.05))
+print('Theoretical probability:')
 print(theoretical.prob)
 ```
+Our intuition initially was that because each coin flip has a fifty-fifty chance of resulting in a loss or gain of one euro, the balance would hover around zero. But upon taking another look at our first line graph, comparing the development of the balances over time, we noticed that most of the lines stayed on the positive or negative side of the graph, and rarely crossed zero. This helps to explain why, as shown in our final histogram, the fraction of time the balance is positive tends to be very high or very low.
