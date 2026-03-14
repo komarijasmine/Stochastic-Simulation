@@ -14,7 +14,57 @@ hist(y, main='Histogram of 500 draws')
 z <- runif(5000)
 hist(z, main='Histogram of 5000 draws')
 ```
+
+[B: simulating random variable S with uniformly distributed variable U]
+```{r}
+n<-10
+
+sim.coin <- function(n) {
+  U<-runif(n, -1, 1)
+  print(U)
+  for (i in 1:n) {
+    if (U[i]<0) {
+      U[i]<--1
+    }
+    else {
+      U[i]<-1
+    }
+  }
+  return (U)
+}
+
+sim.coin(n)
+```
+[C 3650 cumsum(sim.coin(n))]
+
+```{r}
+n<-3650
+
+sim.coin <- function(n) {
+  S<-runif(n, -1, 1)
+  for (i in 1:n) {
+    if (S[i]<0) {
+      S[i]<--1
+    }
+    else {
+      S[i]<-1
+    }
+  }
+  return (S)
+}
+
+sum<-0
+cumsum <- function(x) {
+  for (i in 1:3650) {
+    x<-x+S[i]
+  }
+  return (S)
+}
+cumsum(sim.coin(n))
+plot<-
+```
 [discussion of efficacy of random number generator]
+
 
 [introduction to meat of assignment]
 
