@@ -15,6 +15,11 @@ z <- runif(5000)
 hist(z, main='Histogram of 5000 draws')
 ```
 
+[discussion of efficacy of random number generator]
+
+
+[introduction to meat of assignment]
+
 [B: simulating random variable S with uniformly distributed variable U]
 ```{r}
 n<-10
@@ -40,32 +45,32 @@ sim.coin(n)
 ```{r}
 n<-3650
 
-sim.coin <- function(n) {
-  S<-runif(n, -1, 1)
-  for (i in 1:n) {
-    if (S[i]<0) {
-      S[i]<--1
-    }
-    else {
-      S[i]<-1
-    }
-  }
-  return (S)
-}
-
-sum<-0
+sum<-1:3650
+positive<-0
 cumsum <- function(x) {
-  for (i in 1:3650) {
-    x<-x+S[i]
+  sum[1]<- x[1]
+  for (i in 2:3650) {
+    sum[i]<- sum[i-1] + x[i-1]
+    if (sum[i]>0) {
+      positive<-positive + 1
+
+      }
   }
-  return (S)
+  positive<-positive/3650
+  print("Fraction of time the balance is positive: ")
+  print(positive)
+  return (sum)
 }
-cumsum(sim.coin(n))
-plot<-
+
+balance<-cumsum(sim.coin(n))
+plot(1:3650,balance,type='l',xlab="Number of Trials", ylab="Balance")
 ```
-[discussion of efficacy of random number generator]
+
+[we expect that the balance is positive half the time, is this the case in your generated realization?]
+
+No, because in 
+
+[E: a graph where the balance is positive only 5 percent of the time seems highly unlikely. Make a guess at the probability of this happening]
 
 
-[introduction to meat of assignment]
-
-
+[F:]
