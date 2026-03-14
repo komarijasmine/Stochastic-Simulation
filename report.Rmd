@@ -47,23 +47,33 @@ n<-3650
 
 sum<-1:3650
 positive<-0
+
 cumsum <- function(x) {
   sum[1]<- x[1]
   for (i in 2:3650) {
     sum[i]<- sum[i-1] + x[i-1]
     if (sum[i]>0) {
       positive<-positive + 1
-
       }
   }
   positive<-positive/3650
-  print("Fraction of time the balance is positive: ")
-  print(positive)
-  return (sum)
+  return (list(sum, positive))
 }
+print(cumsum(sim.coin(n))[[1]])
 
-balance<-cumsum(sim.coin(n))
-plot(1:3650,balance,type='l',xlab="Number of Trials", ylab="Balance")
+balance<-cumsum(sim.coin(n))[[1]]
+plot(1:3650,balance,type='l',xlab="Number of Trials", ylab="Balance", ylim=c(-150, 150))
+
+balance<-cumsum(sim.coin(n))[[1]]
+lines(1:3650, balance, type='l', col='blue')
+
+balance<-cumsum(sim.coin(n))[[1]]
+lines(1:3650, balance, type='l', col='red')
+
+balance<-cumsum(sim.coin(n))[[1]]
+lines(1:3650, balance, type='l', col='pink')
+
+
 ```
 
 [we expect that the balance is positive half the time, is this the case in your generated realization?]
@@ -73,4 +83,13 @@ No, because in
 [E: a graph where the balance is positive only 5 percent of the time seems highly unlikely. Make a guess at the probability of this happening]
 
 
+
 [F:]
+
+```{r}
+pos.vec<-1:1000
+for (i in 1:1000) {
+  pos.vec[i]<-cumsum(sim.coin(n))[[2]]
+}
+hist(1:1000, pos.vec, probability=TRUE)
+```
